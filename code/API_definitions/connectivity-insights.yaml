@@ -22,10 +22,10 @@ info:
       specific changes on the application side e.g. adjusting the
       resolution of the video stream upwards or downwards.
 
-      The POST `user-experience-insights` allows an application developer to 
-      read detailed application experience analysis data including QoE scores, 
+      The POST `user-experience-insights` allows an application developer to
+      read detailed application experience analysis data including QoE scores,
       resolution, stalling, latency, and bandwidth statistics for a given device.
-      It's possible to accurately indentify users and application services with
+      It's possible to accurately identify users and application services with
       poor quality of experience.
 
 
@@ -56,6 +56,7 @@ info:
       3. Optional: use the `connectivity-insights-subscriptions` API to receive
       notifications of user experience changes.
 
+    <!-- CAMARA:MANDATORY:authorization-and-authentication:BEGIN -->
     # Authorization and authentication
 
     The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
@@ -361,8 +362,7 @@ components:
 
     ApplicationServerIpv4Address:
       type: string
-      maxLength: 18
-      pattern: '^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(\.([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])){3}(\/(3[0-2]|[12]?[0-9]))?$'
+      maxLength: 49
       example: "192.168.0.1/24"
       description: |
         IPv4 address may be specified in form <address/mask> as:
@@ -375,8 +375,7 @@ components:
 
     ApplicationServerIpv6Address:
       type: string
-      maxLength: 49
-      pattern: '^[0-9a-fA-F:.]+(\/(12[0-8]|1[0-1][0-9]|[1-9]?[0-9]))?$'
+      maxLength: 50
       example: "2001:db8:85a3:8d3:1319:8a2e:370:7344"
       description: |
         IPv6 address may be specified in form <address/mask> as:
@@ -402,229 +401,8 @@ components:
       format: uuid
       maxLength: 36
 
-    UserExperienceInsightRequest:
-      description: Request body to query user experience insights for a given device
-      type: object
-      properties:
-        device:
-          $ref: "#/components/schemas/Device"
-        applicationId:
-          description: |
-            Indicates the Application Identifier. If not carried, the carrier
-            configures mainstream application types (video, games, live streaming)
-            locally.
-          $ref: "#/components/schemas/ApplicationId"
-        applicationType:
-          description: |
-            Indicates the Application type. If not carried, the carrier configures
-            mainstream application types (video, games, live streaming) locally.
-          $ref: "#/components/schemas/ApplicationType"
-      required:
-        - device
-
-    UserExperienceInsightsResponse:
-      type: object
-      description: User experience insights result
-      required:
-        - userExperienceInsightsRecords
-      properties:
-        userExperienceInsightsRecords:
-          type: array
-          items:
-            $ref: "#/components/schemas/UserExperienceInsightsRecords"
-          minItems: 1
-
-    ApplicationType:
-      description: |
-        Indicates the Application type. Negotiated by the carrier and application
-        vendor and configured on the carrier network.
-      type: string
-      example: video/game/Live Video
-
-    UserExperienceInsightsRecords:
-      type: object
-      description: Application Network Collection and Recording
-      properties:
-        appSignalingAndStatisticsAnalysisRecords:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppSignalingAndStatisticsAnalysisRecord'
-          minItems: 1
-
-    AppSignalingAndStatisticsAnalysisRecord:
-      type: object
-      description: |
-        The network's confidence level at being able to meet the network
-        demands of a given application for a given terminal device.
-      properties:
-        starttime:
-          description: start time of data collection record analysis.   
-          $ref: "#/components/schemas/DateTime"
-        endtime:
-          description: end time of data collection record analysis.     
-          $ref: "#/components/schemas/DateTime" 
-        applicationType:
-          description: analysis application category type.  
-          $ref: "#/components/schemas/ApplicationType"
-        applicationId:
-          description: collected application ID.
-          $ref: "#/components/schemas/ApplicationId"    
-        areaData: 
-          description: collection area
-          $ref: "#/components/schemas/AreaData"
-        appSignalingData: 
-          description: cellular network information within the data period.
-          $ref: "#/components/schemas/AppSignalingData"        
-        applicationIndicatorStatistics:
-          description: basic application statistics.
-          $ref: "#/components/schemas/ApplicationIndicatorStatistics"
-        applicationExperienceAnalysis:
-          description: application experience statistics data.
-          $ref: "#/components/schemas/ApplicationExperienceAnalysis"
-    ApplicationIndicatorStatistics:
-      type: object
-      description: Basic statistics on the application during the application use period.
-      properties:
-        subAppStartTime:
-          description: Application start time.
-          $ref: "#/components/schemas/DateTime"
-        subAppEffDur:
-          type: integer
-          description: Unsigned integer identifying a period of time in units of seconds
-        avgBwUl:
-          description: Average uplink bandwidth of an application.
-          $ref: "#/components/schemas/BitRate"
-        avgBwDl:
-          description: Average downlink bandwidth of an application.
-          $ref: "#/components/schemas/BitRate"
-        maxBwUl:
-          description: Maximum uplink bandwidth of the application
-          $ref: "#/components/schemas/BitRate"
-        maxBwDl:
-          description: Maximum downlink bandwidth of the application
-          $ref: "#/components/schemas/BitRate"
-        subAppVol:
-          description: Application-level traffic statistics
-          $ref: "#/components/schemas/VolumeMeasurement"
-        maxDelayAn:
-          type: integer
-          description: Maximum wireless-side latency of an application.
-        maxDelayDn:
-          type: integer
-          description: Maximum wired-side latency of an application.
-    ApplicationExperienceAnalysis:
-      type: object
-      description: Basic statistics on the application during the application use period.
-      properties:
-        avgQoe:
-          type: integer
-          description: "Average score of experience analysis. Value range: 1 to 100 points."
-        maxResolution:
-          type: string
-          description: Maximum resolution in the experience analysis period.
-        mostResolution:
-          type: string
-          description: The resolution with the highest duration ratio within the experience analysis period.
-        maxBitRateUl:
-          description: Maximum uplink bit rate (kbit/s).
-          $ref: "#/components/schemas/BitRate"
-        avgBitRateUl:
-          description: Average uplink bit rate (kbit/s)
-          $ref: "#/components/schemas/BitRate"
-        maxBitRateDl:
-          description: Maximum downlink bit rate (kbit/s)
-          $ref: "#/components/schemas/BitRate"
-        avgBitRateDl:
-          description: Average downlink bit rate (kbit/s)
-          $ref: "#/components/schemas/BitRate"
-        stallSec:
-          type: integer
-          description: Frame freezing duration, in seconds.
-        stallNum:
-          type: integer
-          description: Number of frame freezing times. The detection period is 5 seconds.
-        serviceDelay:
-          type: integer
-          description: Service latency, in seconds.
-        initialDur:
-          type: integer
-          description: Initial service buffering duration, in seconds.
-
-    AreaData:
-      type: object
-      description: Information about the area where a user is located.
-      properties:
-        city:
-          type: string
-          description: user's city of residence.
-        district:
-          type: string
-          description: areas or streets within a city.
-    AppSignalingData:
-      type: object
-      description: Application signaling data.
-      properties:
-        dnn:
-          description: The dnn name 
-          $ref: '#/components/schemas/Dnn'
-        qciOr5qi:
-          description: The 5QI or QCI. 
-          $ref: "#/components/schemas/QciOr5qi"
-        netType:
-          description: Cellular network access type (4G/5G) 
-          $ref: '#/components/schemas/NetType'
-    VolumeMeasurement:
-      type: object
-      description: Application-level traffic statistics.
-      properties:
-        totalVolume:
-          description: total running traffic statistics.
-          $ref: "#/components/schemas/TrafficVolume"
-        ulVolume:
-          description: this shall indicate the volume (bytes) of user plane traffic for the uplink direction.
-          $ref: "#/components/schemas/TrafficVolume"
-        dlVolume:
-          description: this shall indicate the volume (bytes) of user plane traffic for the downlink direction.
-          $ref: "#/components/schemas/TrafficVolume"
-
-    BitRate:
-      type: string
-      description: |
-        String representing a bit rate.
-        pattern: "^\d+(\.\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$"
-
-    TrafficVolume:
-      type: string
-      description: |
-        String representing a traffic volume measured in bytes.
-        Pattern: '^\d+(\.\d+)? (B|kB|MB|GB|TB)$'
-
-    ApplicationId:
-      description: Indicates the Application Identifier.
-      type: string
-      format: uuid
- 
-    Dnn:
-      type: string
-      description: String representing a Data Network as defined in clause 9A of 3GPP TS 23.003.
-
-    QciOr5qi:
-      type: integer
-      description: QoS Class Identifier or 5G QoS Identifier.
-
-    NetType:
-      type: string
-      description: Indicates the type of network accessed.
-
-    DateTime:
-      type: string
-      format: date-time
-      description: |
-        Timestamp of when the occurrence happened.
-        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-      example: "2023-07-03T12:27:08.312Z"
-
-    ErrorInfo:
+    PortsSpec:
+      description: Specification of several TCP or UDP ports
       type: object
       minProperties: 1
       properties:
@@ -658,6 +436,260 @@ components:
         ports:
           - 5060
           - 5070
+
+    UserExperienceInsightRequest:
+      description: Request body to query user experience insights for a given device
+      type: object
+      properties:
+        device:
+          $ref: "../common/CAMARA_common.yaml#/components/schemas/Device"
+        applicationId:
+          description: |
+            Indicates the Application Identifier. If not carried, the carrier
+            configures mainstream application types (video, games, live streaming)
+            locally.
+          $ref: "#/components/schemas/ApplicationId"
+        applicationType:
+          description: |
+            Indicates the Application type. If not carried, the carrier configures
+            mainstream application types (video, games, live streaming) locally.
+          $ref: "#/components/schemas/ApplicationType"
+      required:
+        - device
+
+    UserExperienceInsightsResponse:
+      type: object
+      description: User experience insights result
+      required:
+        - userExperienceInsightsRecords
+      properties:
+        userExperienceInsightsRecords:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserExperienceInsightsRecords"
+          minItems: 1
+          maxItems: 100
+
+    ApplicationType:
+      description: |
+        Indicates the Application type. Negotiated by the carrier and application
+        vendor and configured on the carrier network.
+      type: string
+      maxLength: 128
+      example: video/game/Live Video
+
+    UserExperienceInsightsRecords:
+      type: object
+      description: Application Network Collection and Recording
+      properties:
+        appSignalingAndStatisticsAnalysisRecords:
+          type: array
+          items:
+            $ref: "#/components/schemas/AppSignalingAndStatisticsAnalysisRecord"
+          minItems: 1
+          maxItems: 100
+
+    AppSignalingAndStatisticsAnalysisRecord:
+      type: object
+      description: |
+        Application signaling and statistics analysis record for user experience insights.
+      properties:
+        startTime:
+          description: Start time of data collection record analysis.
+          $ref: "../common/CAMARA_common.yaml#/components/schemas/DateTime"
+        endTime:
+          description: End time of data collection record analysis.
+          $ref: "../common/CAMARA_common.yaml#/components/schemas/DateTime"
+        applicationType:
+          description: Analysis application category type.
+          $ref: "#/components/schemas/ApplicationType"
+        applicationId:
+          description: Collected application ID.
+          $ref: "#/components/schemas/ApplicationId"
+        areaData:
+          description: Collection area.
+          $ref: "#/components/schemas/AreaData"
+        appSignalingData:
+          description: Cellular network information within the data period.
+          $ref: "#/components/schemas/AppSignalingData"
+        applicationIndicatorStatistics:
+          description: Basic application statistics.
+          $ref: "#/components/schemas/ApplicationIndicatorStatistics"
+        applicationExperienceAnalysis:
+          description: Application experience statistics data.
+          $ref: "#/components/schemas/ApplicationExperienceAnalysis"
+
+    ApplicationIndicatorStatistics:
+      type: object
+      description: Basic statistics on the application during the application use period.
+      properties:
+        subAppStartTime:
+          description: Application start time.
+          $ref: "../common/CAMARA_common.yaml#/components/schemas/DateTime"
+        subAppEffDur:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 86400
+          description: Unsigned integer identifying a period of time in units of seconds
+        avgBwUl:
+          description: Average uplink bandwidth of an application.
+          $ref: "#/components/schemas/BitRate"
+        avgBwDl:
+          description: Average downlink bandwidth of an application.
+          $ref: "#/components/schemas/BitRate"
+        maxBwUl:
+          description: Maximum uplink bandwidth of the application
+          $ref: "#/components/schemas/BitRate"
+        maxBwDl:
+          description: Maximum downlink bandwidth of the application
+          $ref: "#/components/schemas/BitRate"
+        subAppVol:
+          description: Application-level traffic statistics
+          $ref: "#/components/schemas/VolumeMeasurement"
+        maxDelayAn:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+          description: Maximum wireless-side latency of an application.
+        maxDelayDn:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+          description: Maximum wired-side latency of an application.
+
+    ApplicationExperienceAnalysis:
+      type: object
+      description: Application experience statistics data.
+      properties:
+        avgQoe:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 100
+          description: "Average score of experience analysis. Value range: 1 to 100 points."
+        maxResolution:
+          type: string
+          maxLength: 64
+          description: Maximum resolution in the experience analysis period.
+        mostResolution:
+          type: string
+          maxLength: 64
+          description: The resolution with the highest duration ratio within the experience analysis period.
+        maxBitRateUl:
+          description: Maximum uplink bit rate (kbit/s).
+          $ref: "#/components/schemas/BitRate"
+        avgBitRateUl:
+          description: Average uplink bit rate (kbit/s)
+          $ref: "#/components/schemas/BitRate"
+        maxBitRateDl:
+          description: Maximum downlink bit rate (kbit/s)
+          $ref: "#/components/schemas/BitRate"
+        avgBitRateDl:
+          description: Average downlink bit rate (kbit/s)
+          $ref: "#/components/schemas/BitRate"
+        stallSec:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 86400
+          description: Frame freezing duration, in seconds.
+        stallNum:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 1000000
+          description: Number of frame freezing times. The detection period is 5 seconds.
+        serviceDelay:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 10000
+          description: Service latency, in seconds.
+        initialDur:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 86400
+          description: Initial service buffering duration, in seconds.
+
+    AreaData:
+      type: object
+      description: Information about the area where a user is located.
+      properties:
+        city:
+          type: string
+          maxLength: 128
+          description: User's city of residence.
+        district:
+          type: string
+          maxLength: 256
+          description: Areas or streets within a city.
+
+    AppSignalingData:
+      type: object
+      description: Application signaling data.
+      properties:
+        dnn:
+          description: The DNN name.
+          $ref: "#/components/schemas/Dnn"
+        qciOr5qi:
+          description: The 5QI or QCI.
+          $ref: "#/components/schemas/QciOr5qi"
+        netType:
+          description: Cellular network access type (4G/5G).
+          $ref: "#/components/schemas/NetType"
+
+    VolumeMeasurement:
+      type: object
+      description: Application-level traffic statistics.
+      properties:
+        totalVolume:
+          description: Total running traffic statistics.
+          $ref: "#/components/schemas/TrafficVolume"
+        ulVolume:
+          description: This shall indicate the volume (bytes) of user plane traffic for the uplink direction.
+          $ref: "#/components/schemas/TrafficVolume"
+        dlVolume:
+          description: This shall indicate the volume (bytes) of user plane traffic for the downlink direction.
+          $ref: "#/components/schemas/TrafficVolume"
+
+    BitRate:
+      type: string
+      maxLength: 64
+      description: |
+        String representing a bit rate.
+
+    TrafficVolume:
+      type: string
+      maxLength: 64
+      description: |
+        String representing a traffic volume measured in bytes.
+
+    ApplicationId:
+      description: Indicates the Application Identifier.
+      type: string
+      format: uuid
+      maxLength: 36
+
+    Dnn:
+      type: string
+      maxLength: 100
+      description: String representing a Data Network as defined in clause 9A of 3GPP TS 23.003.
+
+    QciOr5qi:
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 255
+      description: QoS Class Identifier or 5G QoS Identifier.
+
+    NetType:
+      type: string
+      maxLength: 32
+      description: Indicates the type of network accessed.
 
   responses:
     Generic400:
