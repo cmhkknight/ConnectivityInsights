@@ -191,16 +191,16 @@ paths:
     post:
       security:
         - openId:
-            - connectivity-insights:user-experience-insights:read
+            - connectivity-insights:user-experience-insights:check
       tags:
         - User Experience Insights
-      summary: Read user experience insights.
+      summary: Check user experience insights.
       description: |
         Read user experience insights. The response provides detailed
         application-level experience analysis data including QoE scores,
         resolution, stalling, latency, and bandwidth statistics for a given
         device.
-      operationId: readUserExperienceInsights
+      operationId: checkUserExperienceInsights
       parameters:
         - $ref: "#/components/parameters/x-correlator"
       requestBody:
