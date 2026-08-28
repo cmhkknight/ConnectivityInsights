@@ -231,7 +231,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
   # 401 Error Scenarios
 
   @connectivity_insights_27_read_user_experience_insights_no_authorization_header
-  Scenario: No Authorization header
+  Scenario: No Authorization header for user experience insights
     Given the header "Authorization" is removed
     And a valid user experience insight request body
     When the request "checkUserExperienceInsights" is sent
@@ -241,7 +241,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
     And the response property "$.message" contains a user friendly text
 
   @connectivity_insights_28_read_user_experience_insights_expired_access_token
-  Scenario: Expired access token
+  Scenario: Expired access token for user experience insights
     Given the header "Authorization" is set to an expired access token
     And a valid user experience insight request body
     When the request "checkUserExperienceInsights" is sent
@@ -251,7 +251,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
     And the response property "$.message" contains a user friendly text
 
   @connectivity_insights_29_read_user_experience_insights_invalid_access_token
-  Scenario: Invalid access token
+  Scenario: Invalid access token for user experience insights
     Given the header "Authorization" is set to an invalid access token
     And a valid user experience insight request body
     When the request "checkUserExperienceInsights" is sent
@@ -263,7 +263,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
   # 403 Error Scenarios
 
   @connectivity_insights_30_read_user_experience_insights_permission_denied
-  Scenario: Client does not have sufficient permissions
+  Scenario: Client does not have sufficient permissions for user experience insights
     Given the header "Authorization" is set to a valid access token without required scope
     And a valid user experience insight request body
     When the request "checkUserExperienceInsights" is sent
@@ -273,7 +273,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
     And the response property "$.message" contains a user friendly text
 
   @connectivity_insights_31_read_user_experience_insights_invalid_token_context
-  Scenario: Token context is invalid
+  Scenario: Token context is invalid for user experience insights
     Given the header "Authorization" is set to a valid access token
     And a valid user experience insight request body with inconsistent information compared to the token
     When the request "checkUserExperienceInsights" is sent
@@ -285,7 +285,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
   # 404 Error Scenarios
 
   @connectivity_insights_32_read_user_experience_insights_device_identifier_not_found
-  Scenario: Device identifier not found
+  Scenario: Device identifier not found for user experience insights
     Given a valid user experience insight request body
     And the request body property "$.device" contains identifiers not matching any device in the system
     When the request "checkUserExperienceInsights" is sent
@@ -321,7 +321,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
   # 429 Error Scenarios
 
   @connectivity_insights_35_read_user_experience_insights_too_many_requests
-  Scenario: Too many requests (rate limit)
+  Scenario: Too many requests (rate limit) for user experience insights
     Given the client has exceeded the rate limit
     And a valid user experience insight request body
     When the request "checkUserExperienceInsights" is sent
@@ -331,7 +331,7 @@ Feature: CAMARA Connectivity Insights API, vwip - Operations for Network Quality
     And the response property "$.message" contains a user friendly text
 
   @connectivity_insights_36_read_user_experience_insights_quota_exceeded
-  Scenario: Quota exceeded
+  Scenario: Quota exceeded for user experience insights
     Given the client has exceeded their quota
     And a valid user experience insight request body
     When the request "checkUserExperienceInsights" is sent
