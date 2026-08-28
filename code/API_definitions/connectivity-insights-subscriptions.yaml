@@ -961,13 +961,17 @@ components:
         maxResolution:
           type: string
           maxLength: 64
+          pattern: '^[0-9]{3,4}$'
           description: |
-            Maximum resolution in the experience analysis period.
+            Maximum resolution in the experience analysis period, expressed in
+            vertical pixels (e.g. 720, 1080, 2160).
         mostResolution:
           type: string
           maxLength: 64
+          pattern: '^[0-9]{3,4}$'
           description: |
-            The resolution with the highest duration ratio within the experience analysis period.
+            The resolution with the highest duration ratio within the experience
+            analysis period, expressed in vertical pixels (e.g. 720, 1080, 2160).
         maxBitRateUl:
           description: Maximum uplink bit rate (kbit/s).
           allOf:
@@ -1106,10 +1110,14 @@ components:
         - org.camaraproject.connectivity-insights-subscriptions.v0.subscription-ended
 
     ApplicationType:
-      description: Indicates the Application type. Negotiated by the carrier and application vendor and configured on the carrier network.
+      description: |
+        Indicates the Application type. Negotiated by the carrier and application
+        vendor and configured on the carrier network. For example: live_streaming,
+        meeting, mobile_game, short_video.
       type: string
       maxLength: 128
-      example: video/game/Live Video
+      pattern: '^[a-z]+(_[a-z]+)*$'
+      example: live_streaming
 
     ApplicationId:
       description: Indicates the Application Identifier.
@@ -1120,20 +1128,31 @@ components:
     BitRate:
       type: string
       maxLength: 64
+      pattern: '^\d+(\.\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$'
       description: |
-        String representing a bit rate.
+        String representing a bit rate, formatted as a number followed by a
+        unit: `bps`, `Kbps`, `Mbps`, `Gbps` or `Tbps`.
+      example: "125 Mbps"
 
     TrafficVolume:
       type: string
       maxLength: 64
+      pattern: '^\d+(\.\d+)? (B|kB|MB|GB|TB)$'
       description: |
-        String representing a traffic volume measured in bytes.
+        String representing a traffic volume measured in bytes, formatted as a
+        number followed by a unit: `B`, `kB`, `MB`, `GB` or `TB`.
+      example: "125 MB"
 
     Dnn:
       type: string
       maxLength: 100
+      pattern: '^[a-zA-Z0-9.-]+$'
       description: |
-        String representing a Data Network as defined in clause 9A of 3GPP TS 23.003.
+        String representing a Data Network as defined in clause 9A of 3GPP TS 23.003;
+        it shall contain either a DNN Network Identifier, or a full DNN with both
+        the Network Identifier and Operator Identifier, as specified in 3GPP TS 23.003
+        clause 9.1.1 and 9.1.2. It shall be coded as string in which the labels are
+        separated by dots (e.g. "Label1.Label2.Label3").
 
     QciOr5qi:
       type: integer
@@ -1147,6 +1166,10 @@ components:
       type: string
       maxLength: 32
       description: Indicates the type of network accessed.
+      enum:
+        - SINGLE_4G
+        - SINGLE_5G
+        - DUAL_4G5G
 
     Datatype:
       type: string
