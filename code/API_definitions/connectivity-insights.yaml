@@ -599,7 +599,7 @@ components:
           description: |
             Maximum resolution in the experience analysis period, expressed in
             vertical pixels (e.g. 720, 1080, 2160).
-        mostResolution:
+        majorityResolution:
           type: string
           maxLength: 64
           pattern: '^[0-9]{3,4}$'
@@ -651,14 +651,14 @@ components:
       type: object
       description: Information about the area where a user is located.
       properties:
-        city:
+        region:
           type: string
           maxLength: 128
-          description: User's city of residence.
+          description: User's region of residence.
         district:
           type: string
           maxLength: 256
-          description: Areas or streets within a city.
+          description: Areas or streets within a region.
 
     AppSignalingData:
       type: object
@@ -695,13 +695,35 @@ components:
             - $ref: "#/components/schemas/TrafficVolume"
 
     BitRate:
-      type: string
-      maxLength: 64
-      pattern: '^\d+(\.\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$'
+      type: object
       description: |
-        String representing a bit rate, formatted as a number followed by a
-        unit: `bps`, `Kbps`, `Mbps`, `Gbps` or `Tbps`.
-      example: "125 Mbps"
+        Specification of rate. The value is expressed in the unit indicated by
+        the `unit` property.
+      required:
+        - value
+        - unit
+      properties:
+        value:
+          description: Quantity of rate
+          type: integer
+          format: int32
+          minimum: 0
+          example: 125
+        unit:
+          $ref: "#/components/schemas/RateUnitEnum"
+      example:
+        value: 125
+        unit: Mbps
+
+    RateUnitEnum:
+      description: Units of rate
+      type: string
+      enum:
+        - bps
+        - kbps
+        - Mbps
+        - Gbps
+        - Tbps
 
     TrafficVolume:
       type: string
@@ -723,7 +745,7 @@ components:
       maxLength: 100
       pattern: '^[a-zA-Z0-9.-]+$'
       description: |
-        String representing a Data Network as defined in clause 9A of 3GPP TS 23.003;
+        String representing a Data Network Name as defined in clause 9A of 3GPP TS 23.003;
         it shall contain either a DNN Network Identifier, or a full DNN with both
         the Network Identifier and Operator Identifier, as specified in 3GPP TS 23.003
         clause 9.1.1 and 9.1.2. It shall be coded as string in which the labels are
@@ -738,12 +760,14 @@ components:
 
     NetType:
       type: string
-      maxLength: 32
-      description: Indicates the type of network accessed.
+      description: |
+        The mobile technology of the network that the device is connected to.
       enum:
-        - SINGLE_4G
-        - SINGLE_5G
-        - DUAL_4G5G
+        - 2G
+        - 3G
+        - 4G
+        - 5G
+        - UNKNOWN
 
   responses:
     Generic400:
